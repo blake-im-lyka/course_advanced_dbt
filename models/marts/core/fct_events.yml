@@ -1,0 +1,15 @@
+models:
+  - name: fct_events
+    description: This model contains information about Bingeflix users.
+    meta:
+      priority: high
+      owner:
+        - lindsay
+    columns:
+      - name: session_id
+        description: ''
+        meta:
+          priority: high
+        tests:
+          - not_null
+          - unique
