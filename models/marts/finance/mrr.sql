@@ -206,5 +206,6 @@ final AS (
 
 SELECT
     {{ dbt_utils.generate_surrogate_key(['date_month', 'subscription_id', 'change_category']) }} AS surrogate_key,
-    *
+    *,
+    {{rolling_average_generalised('mrr_amount', 'subscription_id', 'date_month', 7) }}
 FROM final
