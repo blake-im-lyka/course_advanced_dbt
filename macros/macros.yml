@@ -1,9 +1,6 @@
 macros:
   - name: rolling_average_generalised
-    description: >
-      'This is a macro that takes 4 arguments (column_name, partition by, order_by='created_at', rolling_average_period=7) and runs 
-        avg( {{ column_name }} ) OVER (
-                PARTITION BY {{ partition_by }}
-                ORDER BY {{ order_by }}
-                ROWS BETWEEN {{ rolling_average_period - 1 }} PRECEDING AND CURRENT ROW
-            ) AS avg_{{ rolling_average_period }}_periods_{{ column_name }}'
+    description: 'This is a macro that takes 4 arguments (column_name, partition_by, order_by, rolling_average_period) and \n
+                  aggregates the column_name over partition_by and order_by fields over rolling_average_period.'
+  - name: get_monthly_series
+    description: 'This is a macro that creates a monthly date series from int_dates. You can select day of month, where default is 1.'
