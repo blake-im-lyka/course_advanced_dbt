@@ -48,3 +48,7 @@ models:
 
       - name: month_retained_number
         description: The number of months the subscription has been retained since it was started (first month = 0).
+    tests:
+        - dbt_utils.equality:
+            compare_model: ref('unit_test_output_mrr')
+            tags: ['unit_testing'] 

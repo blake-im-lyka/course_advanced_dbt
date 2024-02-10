@@ -1,5 +1,6 @@
 {{ config(tags="p0") }}
-
+{% set import_subscriptions = unit_testing_select_table(ref('dim_subscriptions'), ref('unit_test_input_dim_subscriptions')) %}
+{% set import_dates = unit_testing_select_table(ref('int_dates'), ref('unit_test_input_int_dates')) %}
 
 -- This model is created following the dbt MRR playbook: https://www.getdbt.com/blog/modeling-subscription-revenue/
 
@@ -18,14 +19,18 @@ monthly_subscriptions AS (
         DATE(DATE_TRUNC('month', starts_at)) AS start_month,
         DATE(DATE_TRUNC('month', ends_at)) AS end_month
     FROM
-        {{ ref('dim_subscriptions') }}
+        {{ import_subscriptions }}
     WHERE
         billing_period = 'monthly'
 ),
 
 -- Use the dates spine to generate a list of months
 months AS (
-    {{get_monthly_series()}}
+    SELECT * 
+    FROM
+        {{ import_dates }}
+    WHERE 
+        day_of_month = 1
 ),
 
 -- Logic CTEs
@@ -201,6 +206,6 @@ final AS (
 
 SELECT
     {{ dbt_utils.generate_surrogate_key(['date_month', 'subscription_id', 'change_category']) }} AS surrogate_key,
-    *,
-    {{rolling_average_generalised('mrr_amount', 'subscription_id', 'date_month', 7) }}
+    *
+    {# /* , {{rolling_average_generalised('mrr_amount', 'subscription_id', 'date_month', 7) }} */ #}
 FROM final
